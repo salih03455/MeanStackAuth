@@ -1,0 +1,23 @@
+{
+  "name": "mean-stack-auth",
+  "version": "1.0.0",
+  "description": "Authentication and authorization process with mean stack application",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/salih03455/MeanStackAuth.git"
+  },
+  "keywords": [
+    "authorization",
+    "authentication"
+  ],
+  "author": "Salih Pehlivan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/salih03455/MeanStackAuth/issues"
+  },
+  "homepage": "https://github.com/salih03455/MeanStackAuth#readme"
+}
