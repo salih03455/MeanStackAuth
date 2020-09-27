@@ -4,7 +4,7 @@
   "description": "Authentication and authorization process with mean stack application",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "nodemon index.js"
   },
   "repository": {
     "type": "git",
@@ -19,5 +19,13 @@
   "bugs": {
     "url": "https://github.com/salih03455/MeanStackAuth/issues"
   },
-  "homepage": "https://github.com/salih03455/MeanStackAuth#readme"
+  "homepage": "https://github.com/salih03455/MeanStackAuth#readme",
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "mongoose": "^5.10.6"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.4"
+  }
 }
