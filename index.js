@@ -10,11 +10,10 @@ dotenv.config();
 // Connect to db:
 mongoose.connect(
   process.env.DB_CONNECT, // .env dosyasindan aldik
-  { useNewUrlParser: true, useUnifiedTopology: true },
-  () => {
-    console.log('Connected to db');
-  }
-);
+  { useNewUrlParser: true, useUnifiedTopology: true }
+)
+.then(() => console.log('MongoDB baglantisi basarili :)'))
+.catch(err => console.log('MongoDB baglantisi sirasinda hata olustu: ', err));
 
 // Middleware
 app.use(express.json());
