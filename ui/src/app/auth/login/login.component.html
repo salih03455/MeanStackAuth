@@ -1,0 +1,17 @@
+<div class="loading" *ngIf="isLoading"></div>
+<div class="login" *ngIf="!isLoading">
+  <h2>Login</h2>
+  <form (submit)="onSavePost()">
+    <div class="form-item">
+      <input type="email" placeholder="E-mail">
+      <div class="error" *ngIf="">Please enter a valid email.</div>
+    </div>
+    <div class="form-item">
+      <input type="password" placeholder="Password">
+      <div class="error" *ngIf="">Please enter a valid password.</div>
+    </div>
+    <div class="form-item">
+      <input type="submit" value="Login">
+    </div>
+  </form>
+</div>
