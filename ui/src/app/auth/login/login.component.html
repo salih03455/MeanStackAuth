@@ -1,16 +1,22 @@
 <div class="loading" *ngIf="isLoading"></div>
 <div class="login" *ngIf="!isLoading">
   <h2>Login</h2>
-  <form (submit)="onSavePost()">
+  <form [formGroup]="registerForm" (ngSubmit)="onLogin()">
     <div class="form-item">
-      <input type="email" placeholder="E-mail">
-      <div class="error" *ngIf="">Please enter a valid email.</div>
+      <input formControlName="email" type="email" placeholder="E-mail">
+      <div class="error" *ngIf="submitted && f.email.errors">
+        <div *ngIf="f.email.errors.required">Mail is required.</div>
+        <div *ngIf="f.email.errors.email">Email must be a valid email address.</div>
+      </div>
     </div>
     <div class="form-item">
-      <input type="password" placeholder="Password">
-      <div class="error" *ngIf="">Please enter a valid password.</div>
+      <input formControlName="password" type="password" placeholder="Password">
+      <div class="error" *ngIf="submitted && f.password.errors">
+        <div *ngIf="f.password.errors.required">Password is required.</div>
+        <div *ngIf="f.password.errors.minlength">Password must be at least 6 characters.</div>
+      </div>
     </div>
-    <div class="form-item">
+    <div class="form-item align-right">
       <input type="submit" value="Login">
     </div>
   </form>

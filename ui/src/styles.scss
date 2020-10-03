@@ -15,6 +15,10 @@ a {
   color: #000;
 }
 
+form {
+  width: 360px;
+}
+
 .inside {
   width: 760px;
   margin: auto;
@@ -22,26 +26,37 @@ a {
 
 .form-item {
   margin: 0 0 15px;
+  .error {
+    margin-top: 5px;
+    font-size: 13px;
+    color: #ff0000;
+  }
+  &.align-right {
+    text-align: right;
+  }
 }
 
 input[type=text],
 input[type=password],
 input[type=email] {
   border: 2px solid #000;
+  box-shadow: 2px 2px 0 0 #5cbcff;
   padding: 10px;
   outline: none;
-  width: 350px;
+  width: 100%;
   &:focus {
-    border-color: #0c74bd;
+    border-color: #5cbcff;
   }
 }
 
 input[type=submit] {
   border: 2px solid #000;
+  box-shadow: 2px 2px 0 0 #5cbcff;
   padding: 10px 20px;
   cursor: pointer;
   background: #fff;
   font-weight: 700;
+  outline: none;
   &:hover {
     background: #000;
     color: #fff;
