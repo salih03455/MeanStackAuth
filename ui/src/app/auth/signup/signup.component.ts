@@ -1,5 +1,6 @@
 import { Component, ViewEncapsulation, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-signup',
@@ -12,12 +13,16 @@ export class SignupComponent implements OnInit {
   submitted = false;
   signupForm: FormGroup;
 
-  constructor(private formBuilder: FormBuilder) {}
+  constructor(
+    private formBuilder: FormBuilder,
+    private authService: AuthService  
+  ) {}
 
   ngOnInit() {
     this.signupForm = this.formBuilder.group({
+      name: [null, [Validators.required, Validators.min(4), Validators.maxLength(255)]],
       email: [null, [Validators.required, Validators.email]],
-      password: [null, [Validators.required, Validators.minLength(4)]]
+      password: [null, [Validators.required, Validators.minLength(4), Validators.maxLength(255)]]
     });
   }
 
@@ -28,6 +33,12 @@ export class SignupComponent implements OnInit {
 
   onSignup() {
     this.submitted = true;
-    console.log('Signup...', this.f);
+    if (this.signupForm.status == 'VALID') {
+      this.authService.createUser(
+        this.f.name.value,
+        this.f.email.value,
+        this.f.password.value
+      );
+    }
   }
 }

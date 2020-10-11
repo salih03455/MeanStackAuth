@@ -21,7 +21,7 @@ router.post('/signup', async (req, res, next) => {
     email: req.body.email,
     password: hashedPassword
   });
-  
+
   try {
     const savedUser = await user.save();
     res.send(savedUser);

@@ -1,11 +1,19 @@
 <div class="loading" *ngIf="isLoading"></div>
 <div class="signup" *ngIf="!isLoading">
-  <h2>Login</h2>
+  <h2>Signup</h2>
   <form [formGroup]="signupForm" (ngSubmit)="onSignup()">
+    <div class="form-item">
+      <input formControlName="name" type="text" placeholder="Name">
+      <div class="error" *ngIf="submitted && f.name.errors">
+        <div *ngIf="f.name.errors.required">Name is required.</div>
+        <div *ngIf="f.name.errors.minlength">Name must be at least 4 characters.</div>
+        <div *ngIf="f.name.errors.maxlength">Name must be a maximum of 255 characters.</div>
+      </div>
+    </div>
     <div class="form-item">
       <input formControlName="email" type="email" placeholder="E-mail">
       <div class="error" *ngIf="submitted && f.email.errors">
-        <div *ngIf="f.email.errors.required">Mail is required.</div>
+        <div *ngIf="f.email.errors.required">Email is required.</div>
         <div *ngIf="f.email.errors.email">Email must be a valid email address.</div>
       </div>
     </div>
@@ -13,7 +21,8 @@
       <input formControlName="password" type="password" placeholder="Password">
       <div class="error" *ngIf="submitted && f.password.errors">
         <div *ngIf="f.password.errors.required">Password is required.</div>
-        <div *ngIf="f.password.errors.minlength">Password must be at least 6 characters.</div>
+        <div *ngIf="f.password.errors.minlength">Password must be at least 4 characters.</div>
+        <div *ngIf="f.password.errors.maxlength">Password must be a maximum of 255 characters.</div>
       </div>
     </div>
     <div class="form-item align-right">
