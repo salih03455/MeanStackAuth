@@ -1,5 +1,6 @@
 import { Component, ViewEncapsulation, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-login',
@@ -12,7 +13,7 @@ export class LoginComponent implements OnInit {
   submitted = false;
   loginForm: FormGroup;
 
-  constructor(private formBuilder: FormBuilder) {}
+  constructor(private formBuilder: FormBuilder, public authService: AuthService) {}
 
   ngOnInit() {
     this.loginForm = this.formBuilder.group({
@@ -28,6 +29,10 @@ export class LoginComponent implements OnInit {
 
   onLogin() {
     this.submitted = true;
-    console.log('Login...', this.f);
+    console.log('Login...', this.loginForm);
+    if (this.loginForm.status === 'INVALID') {
+      return;
+    }
+    this.authService.login(this.f.email.value, this.f.password.value);
   }
 }
