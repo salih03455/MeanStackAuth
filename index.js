@@ -4,6 +4,7 @@ const dotenv = require('dotenv');
 const mongoose = require('mongoose');
 // Import Routes:
 const authRoute = require('./routes/auth');
+const postsRoute = require('./routes/posts');
 
 dotenv.config();
 
@@ -32,5 +33,6 @@ app.use(function(req, res, next) {
 
 // Route Middlewares:
 app.use('/api/user', authRoute); // authRoute icindeki endpointlere /api/user prefixi getir
+app.use('/api/posts', postsRoute);
 
 app.listen(3000, () => console.log('Server up and running'));
