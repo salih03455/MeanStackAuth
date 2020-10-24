@@ -33,10 +33,17 @@ export class AuthService {
     const authData: AuthModel = { email, password };
     this.http.post('http://localhost:3000/api/user/login', authData).subscribe(
       (response: any) => {
-        console.log(response.token);
-        this.token = response.token;
-        this.authStatusListener.next(true);
+        const token = response.token;
+        this.token = token;
+        if (token) {
+          this.authStatusListener.next(true);
+        }
       }
     )
+  }
+
+  logout() {
+    this.token = null;
+    this.authStatusListener.next(false);
   }
 }
