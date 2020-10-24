@@ -6,10 +6,21 @@
       <span>Authentication and authorization with mean stack application</span>
     </div>
     <ul>
-      <li><a routerLink="/">Home</a></li>
-      <li><a routerLink="/posts">Posts</a></li>
-      <li><a routerLink="/login">Login</a></li>
-      <li><a routerLink="/signup">Signup</a></li>
+      <li>
+        <a routerLink="/">Home</a>
+      </li>
+      <li *ngIf="userIsAuthenticated">
+        <a routerLink="/posts">Posts</a>
+      </li>
+      <li *ngIf="!userIsAuthenticated">
+        <a routerLink="/login">Login</a>
+      </li>
+      <li *ngIf="!userIsAuthenticated">
+        <a routerLink="/signup">Signup</a>
+      </li>
+      <li *ngIf="userIsAuthenticated">
+        <button>Logout</button>
+      </li>
     </ul>
   </div>
 </div>

@@ -1,4 +1,6 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { AuthService } from '../auth/auth.service';
 
 @Component({
   selector: 'app-header',
@@ -6,11 +8,21 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
   styleUrls: ['./header.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class HeaderComponent implements OnInit {
+export class HeaderComponent implements OnInit, OnDestroy {
+  userIsAuthenticated = false;
+  private authListenerSubs: Subscription;
 
-  constructor() { }
+
+  constructor(private authService: AuthService) { }
 
   ngOnInit(): void {
+    this.authListenerSubs = this.authService.getAuthStatusListener().subscribe(
+      isAuthenticated => this.userIsAuthenticated = isAuthenticated
+    )
+  }
+
+  ngOnDestroy() {
+    this.authListenerSubs.unsubscribe();
   }
 
 }
