@@ -47,10 +47,7 @@ router.post('/login', async (req, res, next) => {
   );
 
   // Token'i responsenin headerine ekle:
-  res.header('auth-token', token);
-  res.json({
-    message: token
-  });
+  res.json({ token });
 });
 
 module.exports = router;
