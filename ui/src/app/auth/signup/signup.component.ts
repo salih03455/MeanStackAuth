@@ -33,7 +33,8 @@ export class SignupComponent implements OnInit {
 
   onSignup() {
     this.submitted = true;
-    if (this.signupForm.status == 'VALID') {
+    this.isLoading = true;
+    if (this.signupForm.status === 'VALID') {
       this.authService.createUser(
         this.f.name.value,
         this.f.email.value,

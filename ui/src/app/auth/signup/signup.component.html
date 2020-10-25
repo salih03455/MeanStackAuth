@@ -1,4 +1,4 @@
-<div class="loading" *ngIf="isLoading"></div>
+<div class="loading" *ngIf="isLoading">Loading...</div>
 <div class="signup" *ngIf="!isLoading">
   <h2>Signup</h2>
   <form [formGroup]="signupForm" (ngSubmit)="onSignup()">

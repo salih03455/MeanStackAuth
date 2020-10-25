@@ -13,7 +13,10 @@ export class LoginComponent implements OnInit {
   submitted = false;
   loginForm: FormGroup;
 
-  constructor(private formBuilder: FormBuilder, public authService: AuthService) {}
+  constructor(
+    private formBuilder: FormBuilder,
+    public authService: AuthService
+  ) {}
 
   ngOnInit() {
     this.loginForm = this.formBuilder.group({
@@ -29,6 +32,7 @@ export class LoginComponent implements OnInit {
 
   onLogin() {
     this.submitted = true;
+    this.isLoading = true;
     console.log('Login...', this.loginForm);
     if (this.loginForm.status === 'INVALID') {
       return;
