@@ -47,7 +47,10 @@ router.post('/login', async (req, res, next) => {
   );
 
   // Token'i responsenin headerine ekle:
-  res.json({ token });
+  res.json({
+    token,
+    expiresIn: 3600
+  });
 });
 
 module.exports = router;
