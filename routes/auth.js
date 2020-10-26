@@ -43,13 +43,12 @@ router.post('/login', async (req, res, next) => {
   const token = jwt.sign(
     { _id: userData._id },
     process.env.TOKEN_SECRET,
-    { expiresIn: '1h' }
+    { expiresIn: '1m' }
   );
 
-  // Token'i responsenin headerine ekle:
   res.json({
     token,
-    expiresIn: 3600
+    expiresIn: 60 // sn
   });
 });
 
