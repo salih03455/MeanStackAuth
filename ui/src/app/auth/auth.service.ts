@@ -11,7 +11,8 @@ export class AuthService {
   private token: string;
   private authStatusListener = new BehaviorSubject<boolean>(false);
   private tokenTimer: any;
-  
+  public errorMessageOnSubmit = new Subject<string>();
+  public isLoading = new BehaviorSubject<boolean>(false);
   constructor(
     private http: HttpClient,
     private router: Router
@@ -42,6 +43,7 @@ export class AuthService {
         const token = response.token;
         this.token = token;
         if (token) {
+          this.isLoading.next(true);
           const expiresInDuration = response.expiresIn;
           this.setAuthTimer(expiresInDuration);
           this.authStatusListener.next(true);
@@ -50,7 +52,11 @@ export class AuthService {
           this.saveAuthData(token, expirationDate)
           this.router.navigate(['/']);
         }
-      }
+      },
+      (error: any) => {
+        this.errorMessageOnSubmit.next(error.error.message);
+      },
+      () => { this.isLoading.next(false); }
     )
   }
 

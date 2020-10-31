@@ -1,5 +1,6 @@
-<div class="loading" *ngIf="isLoading">Loading...</div>
-<div class="login" *ngIf="!isLoading">
+<div class="error">{{ errorMessage$ | async }}</div>
+<div class="loading" *ngIf="(isLoading$ | async)">Loading...</div>
+<div class="login" *ngIf="!(isLoading$ | async)">
   <h2>Login</h2>
   <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
     <div class="form-item">

@@ -9,9 +9,10 @@ import { AuthService } from '../auth.service';
   encapsulation: ViewEncapsulation.None
 })
 export class LoginComponent implements OnInit {
-  isLoading = false;
   submitted = false;
   loginForm: FormGroup;
+  errorMessage$: any;
+  isLoading$: any;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -23,6 +24,9 @@ export class LoginComponent implements OnInit {
       email: [null, [Validators.required, Validators.email]],
       password: [null, [Validators.required, Validators.minLength(4)]]
     });
+
+    this.errorMessage$ = this.authService.errorMessageOnSubmit;
+    this.isLoading$ = this.authService.isLoading;
   }
 
   // convenience getter for easy access to form fields
@@ -31,12 +35,12 @@ export class LoginComponent implements OnInit {
   }
 
   onLogin() {
-    this.submitted = true;
-    this.isLoading = true;
     console.log('Login...', this.loginForm);
+    this.submitted = true;
     if (this.loginForm.status === 'INVALID') {
       return;
     }
+    
     this.authService.login(this.f.email.value, this.f.password.value);
   }
 }
