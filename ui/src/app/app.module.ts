@@ -10,6 +10,7 @@ import { SignupComponent } from './auth/signup/signup.component';
 import { HeaderComponent } from './header/header.component';
 import { AuthInterceptor } from './auth/auth-interceptor';
 import { PostsComponent } from './posts/posts.component';
+import { HomeComponent } from './home/home.component';
 
 @NgModule({
   declarations: [
@@ -17,7 +18,8 @@ import { PostsComponent } from './posts/posts.component';
     LoginComponent,
     SignupComponent,
     HeaderComponent,
-    PostsComponent
+    PostsComponent,
+    HomeComponent
   ],
   imports: [
     BrowserModule,

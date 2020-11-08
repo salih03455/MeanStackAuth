@@ -8,7 +8,7 @@ module.exports = function (req, res, next) {
 	});
 
 	try {
-		const verified = jwt.verify(token, process.env.TOKEN_SECRET);
+		const verified = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
 		// dogrulanirsa jwt.sign metodunda verdigimiz "_id"yi doner
 		req.user = verified;
 		next();

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthModel } from './auth.model';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { Router } from '@angular/router';
@@ -8,7 +8,7 @@ import { Router } from '@angular/router';
   providedIn: 'root'
 })
 export class AuthService {
-  private token: string;
+  private accessToken: string;
   private authStatusListener = new BehaviorSubject<boolean>(false);
   private tokenTimer: any;
   public errorMessageOnSubmit = new Subject<string>();
@@ -19,7 +19,7 @@ export class AuthService {
   ) {}
   
   getToken() {
-    return this.token;
+    return this.accessToken;
   }
 
   getAuthStatusListener() {
@@ -38,18 +38,17 @@ export class AuthService {
 
   login(email: string, password: string) {
     const authData: AuthModel = { email, password };
-    this.http.post<{ token: string, expiresIn: number }>('http://localhost:3000/api/user/login', authData).subscribe(
+    this.http.post<{ accessToken: string, expiresIn: number }>('http://localhost:3000/api/user/login', authData).subscribe(
       (response: any) => {
-        const token = response.token;
-        this.token = token;
-        if (token) {
+        this.accessToken = response.accessToken;
+        if (this.accessToken) {
           this.isLoading.next(true);
-          const expiresInDuration = response.expiresIn;
+          const expiresInDuration = response.expiresIn; // 60 (sn)
           this.setAuthTimer(expiresInDuration);
           this.authStatusListener.next(true);
           const now = new Date();
           const expirationDate = new Date(now.getTime() + expiresInDuration * 1000);
-          this.saveAuthData(token, expirationDate)
+          this.saveAuthData(this.accessToken, expirationDate, response.email)
           this.router.navigate(['/']);
         }
       },
@@ -68,14 +67,21 @@ export class AuthService {
     const now = new Date();
     const expiresIn = authInformation.expirationDate.getTime() - now.getTime(); // kalan zaman (ms)
     if (expiresIn > 0) { // expire olmamis ise
-      this.token = authInformation.token;
+      this.accessToken = authInformation.accessToken;
       this.setAuthTimer(expiresIn / 1000); // sn
       this.authStatusListener.next(true);
     }
   }
 
+  getRefreshToken() {
+    const requestOptions = {
+      headers: new HttpHeaders({ email: localStorage.getItem('email') })
+    };
+    return this.http.get('http://localhost:3000/api/user/refresh-token', requestOptions);
+  }
+
   logout() {
-    this.token = null;
+    this.accessToken = null;
     clearTimeout(this.tokenTimer);
     this.authStatusListener.next(false);
     this.clearAuthData();
@@ -83,30 +89,42 @@ export class AuthService {
   }
 
   private setAuthTimer(duration: number) {
-    console.log('Setting timer: ', duration)
+    console.log('Setting timer: ', duration);
     this.tokenTimer = setTimeout(() => {
-      this.logout();
+      this.getRefreshToken().subscribe(
+        (response: any) => {
+          this.accessToken = response.accessToken;
+          const expiresInDuration = response.expiresIn;
+          this.setAuthTimer(expiresInDuration);
+          const now = new Date();
+          const expirationDate = new Date(now.getTime() + expiresInDuration * 1000);
+          this.saveAuthData(this.accessToken, expirationDate)
+        },
+        (error: any) => console.log(error)
+      );
     }, duration * 1000)
   }
 
-  private saveAuthData(token: string, expirationDate: Date) {
-    localStorage.setItem('token', token);
+  private saveAuthData(accessToken: string, expirationDate: Date, email?: string) {
+    localStorage.setItem('accessToken', accessToken);
     localStorage.setItem('expiration', expirationDate.toISOString());
+    email && localStorage.setItem('email', email);
   }
 
   private clearAuthData() {
-    localStorage.removeItem('token');
+    localStorage.removeItem('accessToken');
     localStorage.removeItem('expiration');
+    localStorage.removeItem('email');
   }
 
   private getAuthData() {
-    const token = localStorage.getItem('token');
+    const accessToken = localStorage.getItem('accessToken');
     const expirationDate = localStorage.getItem('expiration');
-    if (!token || !expirationDate) {
+    if (!accessToken || !expirationDate) {
       return;
     }
     return {
-      token,
+      accessToken,
       expirationDate: new Date(expirationDate)
     }
   }
