@@ -100,7 +100,10 @@ export class AuthService {
           const expirationDate = new Date(now.getTime() + expiresInDuration * 1000);
           this.saveAuthData(this.accessToken, expirationDate)
         },
-        (error: any) => console.log(error)
+        (error: any) => {
+          console.log('Refresh token error: ', error);
+          this.logout();
+        }
       );
     }, duration * 1000)
   }

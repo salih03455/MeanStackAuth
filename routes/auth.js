@@ -92,6 +92,9 @@ router.get('/refresh-token', async (req, res) => {
     
   } catch (err) {
     console.log('error: ', err);
+    res.json({
+      message: 'Refresh token has been denied!'
+    });
   }
   
 });
@@ -107,7 +110,7 @@ function createToken(tokenType, userId) {
 
   if (tokenType === 'refresh') {
     secret = process.env.REFRESH_TOKEN_SECRET;
-    expiresIn = 300 // sn (5 min)
+    expiresIn = 150 // sn (2.5 min)
   }
 
   const token = jwt.sign({ _id: userId }, secret, { expiresIn });
