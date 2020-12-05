@@ -18,15 +18,39 @@ export class AuthGuard implements CanActivate {
   canActivate(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
-  ): boolean | UrlTree | Observable<boolean | UrlTree> | Promise<boolean | UrlTree> {
-    console.log(this.authService.getToken());
+  ) {
 
-    const isAuth = this.authService.getToken() ? true : false;
-    if (!isAuth) {
-      this.authService.getRefreshToken()
-      // this.router.navigate(['/login'])
+    const authData = this.authService.getAuthData();
+    if (!authData) {
+      this.authService.logout();
+      return false;
     }
-    return isAuth;
+
+    // 'local storage'den auth bilgileri gelmis ise:
+    const now = new Date();
+    const expiresIn = authData.expirationDate.getTime() - now.getTime(); // kalan zaman (ms)
+
+    // expire olmamis ise:
+    if (expiresIn > 0) {
+      return true;
+    }
+
+    // expire olmus ise:
+    this.authService.getRefreshToken().subscribe(
+      (response: any) => {
+        console.log('RESPONSE: ', response);
+        
+        const accessToken = response.accessToken;
+        const expiresInDuration = response.expiresIn;
+        const now = new Date();
+        const expirationDate = new Date(now.getTime() + expiresInDuration * 1000);
+        this.authService.saveAuthData(accessToken, expirationDate)
+      },
+      (error: any) => {
+        console.log('Refresh token error: ', error);
+        this.authService.logout();
+      }
+    );
   }
 
 }

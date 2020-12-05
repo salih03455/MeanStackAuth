@@ -92,7 +92,7 @@ router.get('/refresh-token', async (req, res) => {
     
   } catch (err) {
     console.log('error: ', err);
-    res.json({
+    res.status(403).json({
       message: 'Refresh token has been denied!'
     });
   }

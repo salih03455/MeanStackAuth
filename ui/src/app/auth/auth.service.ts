@@ -43,8 +43,7 @@ export class AuthService {
         this.accessToken = response.accessToken;
         if (this.accessToken) {
           this.isLoading.next(true);
-          const expiresInDuration = response.expiresIn; // 60 (sn)
-          this.setAuthTimer(expiresInDuration);
+          const expiresInDuration = response.expiresIn; // (sn)
           this.authStatusListener.next(true);
           const now = new Date();
           const expirationDate = new Date(now.getTime() + expiresInDuration * 1000);
@@ -59,6 +58,7 @@ export class AuthService {
     )
   }
 
+  // Uygulamaya ilk girildiginde tokeni kontrol eder:
   autoAuthUser() {
     const authInformation = this.getAuthData();
     if (!authInformation) {
@@ -68,8 +68,21 @@ export class AuthService {
     const expiresIn = authInformation.expirationDate.getTime() - now.getTime(); // kalan zaman (ms)
     if (expiresIn > 0) { // expire olmamis ise
       this.accessToken = authInformation.accessToken;
-      this.setAuthTimer(expiresIn / 1000); // sn
       this.authStatusListener.next(true);
+    } else {
+      this.getRefreshToken().subscribe(
+        (response: any) => {
+          this.accessToken = response.accessToken;
+          const expiresInDuration = response.expiresIn;
+          const now = new Date();
+          const expirationDate = new Date(now.getTime() + expiresInDuration * 1000);
+          this.saveAuthData(this.accessToken, expirationDate)
+        },
+        (error: any) => {
+          console.log('Refresh token error: ', error);
+          this.logout();
+        }
+      );
     }
   }
 
@@ -88,27 +101,7 @@ export class AuthService {
     this.router.navigate(['/login']);
   }
 
-  private setAuthTimer(duration: number) {
-    console.log('Setting timer: ', duration);
-    this.tokenTimer = setTimeout(() => {
-      this.getRefreshToken().subscribe(
-        (response: any) => {
-          this.accessToken = response.accessToken;
-          const expiresInDuration = response.expiresIn;
-          this.setAuthTimer(expiresInDuration);
-          const now = new Date();
-          const expirationDate = new Date(now.getTime() + expiresInDuration * 1000);
-          this.saveAuthData(this.accessToken, expirationDate)
-        },
-        (error: any) => {
-          console.log('Refresh token error: ', error);
-          this.logout();
-        }
-      );
-    }, duration * 1000)
-  }
-
-  private saveAuthData(accessToken: string, expirationDate: Date, email?: string) {
+  public saveAuthData(accessToken: string, expirationDate: Date, email?: string) {
     localStorage.setItem('accessToken', accessToken);
     localStorage.setItem('expiration', expirationDate.toISOString());
     email && localStorage.setItem('email', email);
@@ -120,7 +113,7 @@ export class AuthService {
     localStorage.removeItem('email');
   }
 
-  private getAuthData() {
+  public getAuthData() {
     const accessToken = localStorage.getItem('accessToken');
     const expirationDate = localStorage.getItem('expiration');
     if (!accessToken || !expirationDate) {
