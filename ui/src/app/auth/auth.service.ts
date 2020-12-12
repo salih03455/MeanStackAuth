@@ -88,7 +88,10 @@ export class AuthService {
 
   getRefreshToken() {
     const requestOptions = {
-      headers: new HttpHeaders({ email: localStorage.getItem('email') })
+      headers: new HttpHeaders({
+        'email': localStorage.getItem('email'),
+        'x-access-token': localStorage.getItem('accessToken')
+      })
     };
     return this.http.get('http://localhost:3000/api/user/refresh-token', requestOptions);
   }
